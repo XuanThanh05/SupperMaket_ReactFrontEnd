@@ -7,17 +7,30 @@ import SupplierFormModal from '../components/SupplierFormModal';
 function SupplierPage() {
   const [showForm, setShowForm] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0); 
   const [totalPages, setTotalPages] = useState(1);
+  const [filters, setFilters] = useState({ name: '', phone: '', email: '' });
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/suppliers?page=${page}`)
+    const params = new URLSearchParams({
+      page,
+      name: filters.name || '',
+      phone: filters.phone || '',
+      email: filters.email || ''
+    });
+
+    fetch(`http://localhost:8080/api/suppliers/search?${params.toString()}`)
       .then(res => res.json())
       .then(data => {
         setSuppliers(data.content);
         setTotalPages(data.totalPages);
       });
-  }, [page]);
+  }, [page, filters]);
+
+  const handleSearch = ({ name, phone, email }) => {
+    setFilters({ name, phone, email });
+    setPage(0);
+  };
 
   return (
     <>
@@ -27,12 +40,24 @@ function SupplierPage() {
           <button className="btn btn-light btn-sm">← Trở lại</button>
         </div>
 
-        <SupplierFilter />
+        <SupplierFilter onSearch={handleSearch} />
         <SupplierTable suppliers={suppliers} onAddClick={() => setShowForm(true)} />
-        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+        <Pagination
+          currentPage={page + 1}
+          totalPages={totalPages}
+          onPageChange={(pageNumber) => setPage(pageNumber - 1)} 
+        />
       </div>
 
-      {showForm && <SupplierFormModal onClose={() => setShowForm(false)} />}
+      {showForm && (
+        <SupplierFormModal
+          onClose={() => setShowForm(false)}
+          onSuccess={(newSupplier) => {
+            setPage(0); 
+          }}
+        />
+      )}
+
     </>
   );
 }
