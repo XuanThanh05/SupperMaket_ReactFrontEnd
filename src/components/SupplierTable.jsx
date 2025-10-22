@@ -1,12 +1,4 @@
-function SupplierTable({ onAddClick }) {
-  const data = Array(8).fill({
-    id: 1,
-    name: 'Tên nhà cung cấp',
-    address: 'Địa chỉ',
-    phone: 'SĐT',
-    email: 'Email',
-  });
-
+function SupplierTable({ suppliers, onAddClick }) {
   return (
     <div className="bg-white border rounded shadow-sm p-3">
       <div className="text-end mb-2">
@@ -26,10 +18,10 @@ function SupplierTable({ onAddClick }) {
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
+          {suppliers.map((item, index) => (
+            <tr key={item.supplierId}>
               <td>{index + 1}</td>
-              <td>{item.name}</td>
+              <td>{item.companyName}</td>
               <td>{item.address}</td>
               <td>{item.phone}</td>
               <td>{item.email}</td>
@@ -44,5 +36,4 @@ function SupplierTable({ onAddClick }) {
     </div>
   );
 }
-
-export default SupplierTable;
+export default SupplierTable
