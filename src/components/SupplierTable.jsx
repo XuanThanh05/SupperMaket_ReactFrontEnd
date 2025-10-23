@@ -1,4 +1,4 @@
-function SupplierTable({ suppliers, onAddClick }) {
+function SupplierTable({ suppliers, onAddClick, onDeleteClick }) {
   return (
     <div className="bg-white border rounded shadow-sm p-3">
       <div className="text-end mb-2">
@@ -27,7 +27,12 @@ function SupplierTable({ suppliers, onAddClick }) {
               <td>{item.email}</td>
               <td>
                 <button className="btn btn-warning btn-sm me-2">Sửa</button>
-                <button className="btn btn-danger btn-sm">Xóa</button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => onDeleteClick(item.supplierId)}
+                >
+                  Xóa
+                </button>
               </td>
             </tr>
           ))}

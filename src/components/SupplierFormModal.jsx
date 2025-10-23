@@ -36,12 +36,12 @@ function SupplierFormModal({ onClose, onSuccess }) {
 
       const data = await response.json();
 
-      toast.success('✅ Thêm nhà cung cấp thành công!');
+      toast.success(' Thêm nhà cung cấp thành công!');
 
       if (onSuccess) onSuccess(data);
       onClose();
     } catch (err) {
-      toast.error(`❌ Lỗi: ${err.message}`);
+      toast.error(` Lỗi: ${err.message}`);
     }
   };
 

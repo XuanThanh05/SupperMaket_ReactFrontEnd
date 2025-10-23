@@ -4,6 +4,10 @@ import SupplierTable from '../components/SupplierTable';
 import Pagination from '../components/Pagination';
 import SupplierFormModal from '../components/SupplierFormModal';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 function SupplierPage() {
   const [showForm, setShowForm] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
@@ -31,6 +35,47 @@ function SupplierPage() {
     setFilters({ name, phone, email });
     setPage(0);
   };
+  
+  
+  const handleDeleteConfirm = (id) => {
+    fetch(`http://localhost:8080/api/suppliers/${id}`, {
+      method: 'DELETE',
+    })
+      .then((res) => {
+        if (res.status === 204) {
+          toast.success("Xoá thành công!");
+          setSuppliers((prev) => prev.filter((s) => s.supplierId !== id));
+        } else {
+          toast.error("Xoá thất bại!");
+        }
+      })
+      .catch(() => toast.error("Có lỗi xảy ra khi xoá!"));
+  };
+
+  const handleDelete = (id) => {
+    toast(
+      ({ closeToast }) => (
+        <div>
+          <p>Bạn có chắc chắn muốn xoá?</p>
+          <button
+            className="btn btn-danger btn-sm me-2"
+            onClick={() => {
+              handleDeleteConfirm(id);
+              closeToast();
+            }}
+          >
+            Xoá
+          </button>
+          <button className="btn btn-secondary btn-sm" onClick={closeToast}>
+            Huỷ
+          </button>
+        </div>
+      ),
+      { autoClose: false }
+    );
+  };
+
+
 
   return (
     <>
@@ -41,7 +86,11 @@ function SupplierPage() {
         </div>
 
         <SupplierFilter onSearch={handleSearch} />
-        <SupplierTable suppliers={suppliers} onAddClick={() => setShowForm(true)} />
+        <SupplierTable
+          suppliers={suppliers}
+          onAddClick={() => setShowForm(true)}
+          onDeleteClick={handleDelete}
+        />
         <Pagination
           currentPage={page + 1}
           totalPages={totalPages}
@@ -57,6 +106,7 @@ function SupplierPage() {
           }}
         />
       )}
+      <ToastContainer position="top-right" autoClose={3000} />
 
     </>
   );
